@@ -29,5 +29,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("Session started for User:", socket.id);
+  socket.on("ping", (data) => {
+    io.emit("ping-recd", { id: socket.id, message: data });
+  });
 });
