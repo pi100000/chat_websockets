@@ -16,7 +16,7 @@ function App() {
 
   useEffect(() => {
     if (!socket) {
-      socket = io.connect("http://localhost:4001", {
+      socket = io.connect(process.env.REACT_APP_SERVER_URL, {
         auth: {
           sessionID: localStorage.getItem("sessionID") || null,
         },

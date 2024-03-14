@@ -5,11 +5,11 @@ const { Server } = require("socket.io");
 const server = http.createServer(app);
 const crypto = require("crypto");
 
-const port = 4001;
 const cors = require("cors");
 const dotenv = require("dotenv");
 
 dotenv.config();
+const port = process.env.PORT;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
