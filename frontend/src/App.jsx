@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import "./App.css";
 
@@ -7,6 +7,7 @@ let socket;
 function App() {
   const [message, setMessage] = useState("");
   const [history, setHistory] = useState([]);
+  const chatContainerRef = useRef(null);
 
   const emitEvent = () => {
     socket.emit("ping", message);
@@ -50,28 +51,45 @@ function App() {
       ]);
     });
 
+    scrollToBottom();
+
     return () => {
       socket.off("chat-history");
       socket.off("ping-recd");
     };
   }, []);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [history]);
+
+  const scrollToBottom = () => {
+    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+  };
+
   return (
-    <div>
-      <div>
+    <div className="app">
+      <div ref={chatContainerRef} className="chat-container">
         {history.map((item, index) => (
-          <div key={index}>
-            <div>{item.message}</div>
+          <div key={index} className={item.self ? "message-self" : "message"}>
+            <div
+              className={item.self ? "message-content-self" : "message-content"}
+            >
+              {item.message}
+            </div>
           </div>
         ))}
       </div>
-      <div>
+      <div className="input-container">
         <input
           onChange={(event) => setMessage(event.target.value)}
           value={message}
-          placeholder="type your message here..."
+          className="message-input"
+          placeholder="Type your message here..."
         />
-        <button onClick={emitEvent}>Send</button>
+        <button onClick={emitEvent} className="send-button">
+          Send
+        </button>
       </div>
     </div>
   );
